@@ -100,8 +100,7 @@ function Hexer(canvas, setup,logical) {
 
         let x = coordinate.hexX * this.hexRectangleWidth + ((coordinate.hexY % 2) * this.hexRadius);
         let y = coordinate.hexY * (this.sideLength + this.hexHeight);
-        let ret = new HexPixel(x,y);
-        return ret;
+        return new HexPixel(x,y);
     }
 
 

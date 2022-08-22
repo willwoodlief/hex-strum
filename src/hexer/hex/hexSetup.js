@@ -5,5 +5,5 @@ function HexSetup() {
     this.lineWidth = 1;
     this.boardWidth = 20;
     this.boardHeight = 20;
-    this.sideLength = 18;
+    this.sideLength = 20;
 }

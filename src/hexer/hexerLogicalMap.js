@@ -200,7 +200,7 @@ function HexerLogicalMap(settings) {
      */
     this.add_selected = function(coordinate,hexer) {
         let parts = this.get_parts(coordinate.hexX,coordinate.hexY);
-        if (parts) {
+        if (parts.length) {
             for(let i = 0; i < parts.length; i++) {
                 let part = parts[i];
                 this.selected[part.id] = part;
@@ -270,7 +270,21 @@ function HexerLogicalMap(settings) {
      * @param {Hexer} hexer
      */
     this.onMouseClick = function(coordinate, hexer) {
+        let parts = this.get_parts(coordinate.hexX,coordinate.hexY);
+        if (parts.length) {
+            for(let i = 0; i < parts.length; i++) {
+                let part = parts[i];
+                this.selected[part.id] = part;
+                part.poke(this);
+                hexer.drawHexagon(coordinate.hexX,coordinate.hexY,
+                    function(da_coordinate,da_pixel,da_map)
+                    {
+                        part.draw(da_pixel,da_map);
+                    }
+                );
 
+            }
+        }
     }
 
 
@@ -281,7 +295,7 @@ function HexerLogicalMap(settings) {
     this.draw = function(coordinate, hexer) {
         let parts = this.get_parts(coordinate.hexX,coordinate.hexY);
         let pixel = hexer.get_pixels(coordinate);
-        if (parts) {
+        if (parts.length) {
             for(let i = 0; i < parts.length; i++) {
                 let part = parts[i];
                 part.draw(pixel,hexer);

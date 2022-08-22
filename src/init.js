@@ -9,7 +9,8 @@ let HexStrumSettings = {
  */
 let HexStrum = {
     logical: null,
-    map: null
+    map: null,
+    test_cell: null
 }
 
 
@@ -23,11 +24,10 @@ function hex_strum_init() {
     HexStrum.logical = logical;
 
     {
-        let p1 = new HexerPart();
-        p1.background_color= '#FEAA04'
+        let p1  = new SpecSignal({background_color: '#FEAA04',hz: 180,strength:5,value: 2});
+        HexStrum.test_cell = p1;
         HexStrum.logical.set_part(1,2,p1);
-        let p2 = new HexerPart();
-        p2.background_color= '#0EAA99'
+        let p2 = new HexerPart({background_color: '#0EAA99'});
         HexStrum.logical.set_part(2,2,p2);
         HexStrum.map.drawBoard()
     }
