@@ -2,5 +2,7 @@
   "name": "hex-strum",
   "version": "1.0.0",
   "dependencies": {
+    "chroma-js": "^2.4.2",
+    "invert-color": "^2.0.0"
   }
 }

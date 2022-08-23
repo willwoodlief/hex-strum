@@ -3,17 +3,31 @@
     <title>Hex Strum</title>
 </head>
 <body>
-<canvas id="hexstrum_canvas" width="660" height="624"></canvas>
+<canvas id="hexstrum_canvas" width="1600" height="1300"></canvas>
 
-<script src="hexer/hex/hexCoordinate.js"></script>
-<script src="hexer/hex/hexPixel.js"></script>
-<script src="hexer/hex/hexSetup.js"></script>
-<script src="hexer/hexerPart.js"></script>
-<script src="hexer/hexerLogicalMap.js"></script>
-<script src="hexer/hexer.js"></script>
+<script src="node_modules/chroma-js/chroma.js"></script>
+<script src="node_modules/invert-color/lib/invert.js"></script>
 
-<script src="init.js"></script>
-<script src="spec/spec.js"></script>
+
+
+<script src="src/hexer/hex/hexCoordinate.js"></script>
+<script src="src/hexer/hex/hexPixel.js"></script>
+<script src="src/hexer/hex/hexSetup.js"></script>
+<script src="src/hexer/hexerPart.js"></script>
+<script src="src/hexer/hexerLogicalMap.js"></script>
+<script src="src/hexer/hexer.js"></script>
+
+
+<script src="src/spec/specPartBase.js"></script>
+<script src="src/spec/specSignal.js"></script>
+<script src="src/spec/specSignalRange.js"></script>
+<script src="src/spec/spec.js"></script>
+<script src="src/spec/specHexStack.js"></script>
+<script src="src/spec/specContainer.js"></script>
+
+<script src="src/hexStrumObject.js"></script>
+
+<script src="src/init.js"></script>
 
 </body>
 </html>
