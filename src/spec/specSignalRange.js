@@ -1,5 +1,6 @@
 class SpecSignalRange {
 
+    static DEFAULT_NAME = 'apple';
     constructor(what) {
 
         /**
@@ -21,6 +22,11 @@ class SpecSignalRange {
          * @type {?number}
          */
         this.listen_max_hz = what.listen_max_hz || null;
+
+        /**
+         * @type {string}
+         */
+        this.name = what.name || SpecSignalRange.DEFAULT_NAME;
     }
 
 }

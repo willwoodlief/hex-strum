@@ -79,15 +79,7 @@ function HexerLogicalMap(settings) {
         throw new Error('Tried to set a part out of bounds! [' + x + ',' + y + '] ');
     };
 
-    /**
-     *
-     * @param {HexerPart} part
-     * @return {HexerPart[]}
-     */
-    this.get_part_neighbors = function (part) {
-        let coordinates = this.locations[part.id];
-        return this.get_all_neighbors(coordinates.hexX,coordinates.hexY);
-    };
+
 
     /**
      *
@@ -192,6 +184,16 @@ function HexerLogicalMap(settings) {
 
     };
 
+    /**
+     * @param {HexerPart} part
+     * @returns {?HexCoordinate}
+     */
+    this.get_coordinates = function(part) {
+        if (part.id in this.locations) {
+            return this.locations[part.id];
+        }
+        return null;
+    }
 
     /**
      *
@@ -199,13 +201,13 @@ function HexerLogicalMap(settings) {
      * @param {Hexer} hexer
      */
     this.add_selected = function(coordinate,hexer) {
-        let parts = this.get_parts(coordinate.hexX,coordinate.hexY);
+        let parts = this.get_parts(coordinate.mapX,coordinate.mapY);
         if (parts.length) {
             for(let i = 0; i < parts.length; i++) {
                 let part = parts[i];
                 this.selected[part.id] = part;
                 part.selected(this);
-                hexer.drawHexagon(coordinate.hexX,coordinate.hexY,
+                hexer.drawHexagon(coordinate.mapX,coordinate.mapY,
                     function(da_coordinate,da_pixel,da_map)
                     {
                         part.draw(da_pixel,da_map);
@@ -225,7 +227,7 @@ function HexerLogicalMap(settings) {
             let part = this.selected[guid];
             part.un_selected(this);
             let coordinate = this.locations[part.id];
-            hexer.drawHexagon(coordinate.hexX,coordinate.hexY,
+            hexer.drawHexagon(coordinate.mapX,coordinate.mapY,
                 function(da_coordinate,da_pixel,da_map)
                 {
                     part.draw(da_pixel,da_map);
@@ -270,13 +272,13 @@ function HexerLogicalMap(settings) {
      * @param {Hexer} hexer
      */
     this.onMouseClick = function(coordinate, hexer) {
-        let parts = this.get_parts(coordinate.hexX,coordinate.hexY);
+        let parts = this.get_parts(coordinate.mapX,coordinate.mapY);
         if (parts.length) {
             for(let i = 0; i < parts.length; i++) {
                 let part = parts[i];
                 this.selected[part.id] = part;
                 part.poke(this);
-                hexer.drawHexagon(coordinate.hexX,coordinate.hexY,
+                hexer.drawHexagon(coordinate.mapX,coordinate.mapY,
                     function(da_coordinate,da_pixel,da_map)
                     {
                         part.draw(da_pixel,da_map);
@@ -293,7 +295,7 @@ function HexerLogicalMap(settings) {
      * @param {Hexer} hexer
      */
     this.draw = function(coordinate, hexer) {
-        let parts = this.get_parts(coordinate.hexX,coordinate.hexY);
+        let parts = this.get_parts(coordinate.mapX,coordinate.mapY);
         let pixel = hexer.get_pixels(coordinate);
         if (parts.length) {
             for(let i = 0; i < parts.length; i++) {
@@ -303,19 +305,4 @@ function HexerLogicalMap(settings) {
         }
     }
 
-    /**
-     * @param {Hexer} hexer
-     */
-    this.draw_all = function( hexer) {
-
-        for (let x = 0; x < this.boardWidth; x++) {
-            for (let y = 0; y < this.boardHeight; y++) {
-                for (let z = 0; z < this.parts[x][y].length; z++) {
-                    let coordinate = new HexCoordinate(x,y);
-                    this.draw(coordinate,hexer);
-                }
-            }
-        }
-
-    }
 }

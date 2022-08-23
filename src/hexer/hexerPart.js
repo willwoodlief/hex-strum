@@ -8,7 +8,7 @@ class HexerPart {
     constructor(what) {
         this.color =  (what && (`color` in what ) && what.value) || HexerPart.PART_DEFAULT_COLOR;
         this.background_color = (what && (`background_color` in what ) && what.background_color)  || HexerPart.PART_DEFAULT_BACKGROUND_COLOR;
-        this.id = (what && (`id` in what ) && what.id)  || crypto.randomUUID();
+        this.id = crypto.randomUUID();
     }
 
 
@@ -56,7 +56,7 @@ class HexerPart {
      * @param {HexerLogicalMap} logical
      */
     poke(logical) {
-        console.debug("base poked",this);
+
     }
 
 }

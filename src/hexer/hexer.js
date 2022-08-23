@@ -36,11 +36,15 @@ function Hexer(canvas, setup,logical) {
         let x = eventInfo.offsetX || (eventInfo.layerX??-1 );
         let y = eventInfo.offsetY || (eventInfo.layerY??-1 );
 
-        let coords = that.get_board_coords(x, y);
-        if (coords.hexX >= 0 && coords.hexX < that.boardWidth) {
-            if (coords.hexY >= 0 && coords.hexY < that.boardHeight) {
-                return coords;
+        try {
+            let coords = that.get_board_coords(x, y);
+            if (coords.mapX >= 0 && coords.mapX < that.boardWidth) {
+                if (coords.mapY >= 0 && coords.mapY < that.boardHeight) {
+                    return coords;
+                }
             }
+        } catch (err) {
+            //its invalid
         }
         return null;
     }
@@ -50,6 +54,8 @@ function Hexer(canvas, setup,logical) {
 
             let coords = is_valid_hex_from_event(eventInfo);
             if (coords) {
+                let test = new HexCoordinate(5,8);
+                console.debug('coordinates',coords,coords.distance(test));
                 that.logical.onMouseClick(coords, that);
             }
         });
@@ -98,8 +104,8 @@ function Hexer(canvas, setup,logical) {
      */
     this.get_pixels = function(coordinate) {
 
-        let x = coordinate.hexX * this.hexRectangleWidth + ((coordinate.hexY % 2) * this.hexRadius);
-        let y = coordinate.hexY * (this.sideLength + this.hexHeight);
+        let x = coordinate.mapX * this.hexRectangleWidth + ((coordinate.mapY % 2) * this.hexRadius);
+        let y = coordinate.mapY * (this.sideLength + this.hexHeight);
         return new HexPixel(x,y);
     }
 
