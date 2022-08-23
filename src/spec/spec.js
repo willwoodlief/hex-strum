@@ -69,6 +69,7 @@ class Spec  extends SpecPartBase {
      */
     whisper(signals) {
 
+        let accumulated_values = {};
         let values = {};
 
         for(let s = 0; s < signals.length; s++) {
@@ -77,9 +78,19 @@ class Spec  extends SpecPartBase {
                 let le_range = this.ranges[r];
                 if (da_signal.hz >= le_range.listen_min_hz && da_signal.hz <= le_range.listen_max_hz) {
                     if (da_signal.strength >= le_range.listen_min_strength && da_signal.strength <= le_range.listen_max_strength) {
-                        values[le_range.name] = da_signal.value;
+                        if (!(le_range.name in accumulated_values)) {
+                            accumulated_values[le_range.name] = [];
+                        }
+                        accumulated_values[le_range.name].push(da_signal.value) ;
                     }
                 }
+            }
+        }
+        for (let i in accumulated_values) {
+            if (accumulated_values[i].length === 1) {
+                values[i] = accumulated_values[i][0];
+            } else {
+                values[i] = accumulated_values[i];
             }
         }
 

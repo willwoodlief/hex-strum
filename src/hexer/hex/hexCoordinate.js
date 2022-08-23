@@ -113,7 +113,7 @@ void Map::convertToXY(int a, int b, int c, int& arrayX, int& arrayY)
 	//filter for off bounds for x
 	int xstart = (b + 1)/2;
 	if (a - xstart < 0 ) _DIS("Convert to xy converted to an illegal x value");
-							//its to the left
+							//it's to the left
 
 	arrayY = b;
 

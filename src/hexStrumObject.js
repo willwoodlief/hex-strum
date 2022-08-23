@@ -50,6 +50,19 @@ class HexStrumObject  {
         return this.container.create_spec(x,y,[],signal,callback);
     }
 
+
+    /**
+     *
+     * @param {number} x
+     * @param {number} y
+     * @param {SpecSignal} signal
+     * @param {SpecSignalRange[]} ranges
+     * @param {specValueCallback} process
+     */
+    create_spec(x,y,signal,ranges, process) {
+        return this.container.create_spec(x,y,ranges,signal,process);
+    }
+
     run() {
         this.container.run();
         this.refresh();

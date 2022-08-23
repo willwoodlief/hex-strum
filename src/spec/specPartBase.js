@@ -116,8 +116,12 @@ class SpecPartBase extends HexerPart {
                  * @type {SpecSignal}
                  */
                 let signal = signals[i];
-                da_colors.push(signal.get_background_color());
-                da_raw_strengths.push(signal.strength);
+                let bg_color = signal.get_background_color();
+                if (bg_color) {
+                    da_colors.push(bg_color);
+                    da_raw_strengths.push(signal.strength);
+                }
+
             }
         }
         if (da_colors.length === 0) {return null;}
