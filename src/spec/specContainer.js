@@ -15,8 +15,7 @@ class SpecContainer  {
     create_spec(x,y,input,output,value_function) {
         let stack = this.get_stack_at_location(x,y);
         if (!stack) {
-            console.warn('no stack at ',x,y);
-            return;
+            throw new Error(`no stack at ${x} ${y}`);
         }
         let ranges ;
         if (Array.isArray(input)) {

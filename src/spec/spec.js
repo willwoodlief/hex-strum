@@ -74,6 +74,9 @@ class Spec  extends SpecPartBase {
 
         for(let s = 0; s < signals.length; s++) {
             let da_signal = signals[s];
+            if (da_signal.owned_by_spec_id === this.id) {
+                continue;
+            }
             for(let r = 0; r < this.ranges.length; r++) {
                 let le_range = this.ranges[r];
                 if (da_signal.hz >= le_range.listen_min_hz && da_signal.hz <= le_range.listen_max_hz) {
@@ -95,7 +98,13 @@ class Spec  extends SpecPartBase {
         }
 
         if (this.process) {
-            this.output.value = this.process(values);
+            let proc = this.process(values);
+
+            if ( typeof proc === 'object' && proc instanceof SpecSignal) {
+                this.output = proc;
+            } else {
+                this.output.value = proc;
+            }
         }
     }
 

@@ -18,3 +18,17 @@
  * @callback specValueCallback
  * @param {object} values
  */
+
+/**
+ *
+ * @typedef  {object} entityInit
+ * @property {object} signal
+ * @property {string|number} signal.hz
+ * @property {number} signal.range
+ * @property {number} signal.value
+ * @property {object} location
+ * @property {number} location.x
+ * @property {number} location.y
+ * @property {SpecSignalRange[]} ranges
+ * @property {specValueCallback} process
+ */
