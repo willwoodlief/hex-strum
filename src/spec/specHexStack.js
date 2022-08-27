@@ -38,13 +38,21 @@ class SpecHexStack extends SpecPartBase {
      * @param {HexerPart} part
      */
     remove_part(part) {
-        if (!(part.id in this.part_lookup)) {return;} //not here
+        if (!(part.id in this.part_lookup)) {
+            debugger;
+            return;
+        } //not here
         delete this.part_lookup[part.id];
+        let b_found = false;
         for (let i = 0; i < this.parts.length; i++) {
             if (this.parts[i].id === part.id) {
                 this.parts.splice(i,1);
+                b_found = true;
                 break;
             }
+        }
+        if (!b_found) {
+            debugger;
         }
         let bg = this.calculate_color_from_values(this.parts);
         if (bg) {this.background_color = bg;}
@@ -85,19 +93,20 @@ class SpecHexStack extends SpecPartBase {
     }
 
 
-    /**
-     * @returns {SpecSignal[]}
-     */
+
     clear_signals() {
-        let ret = [];
+        let rem = [];
         for (let i = 0; i < this.parts.length; i++) {
-            if (this.parts[i] instanceof SpecSignal) {
+            if (this.parts[i] instanceof Spec) {
                 let part = this.parts[i];
-                this.remove_part(part);
-                ret.push(part);
+                rem.push(part);
             }
         }
-        return ret;
+        this.parts = [];
+        this.part_lookup = {};
+        for(let k = 0; k < rem.length ; k++) {
+            this.add_part(rem[k]);
+        }
     }
 
     /**

@@ -20,6 +20,12 @@ function HexerLogicalMap(settings) {
      */
     this.locations = {};
 
+    /**
+     *
+     * @type {Object.<string, HexerPart>}
+     */
+    this.part_lookup = {};
+
 
 
 
@@ -73,11 +79,24 @@ function HexerLogicalMap(settings) {
             if (y >= 0 && y < this.boardHeight) {
                 this.parts[x][y].push(part);
                 this.locations[part.id] = new HexCoordinate(x,y);
+                this.part_lookup[part.id] = part;
                 return;
             }
         }
         throw new Error('Tried to set a part out of bounds! [' + x + ',' + y + '] ');
     };
+
+    /**
+     *
+     * @param {string} id
+     * @returns {HexerPart|null}
+     */
+    this.find_part_by_id = function(id) {
+        if (this.part_lookup.hasOwnProperty(id)) {
+            return this.part_lookup[id];
+        }
+        return null;
+    }
 
 
 

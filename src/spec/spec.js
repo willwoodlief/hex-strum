@@ -6,7 +6,14 @@ class Spec  extends SpecPartBase {
         /**
          * @type {SpecSignalRange[]}
          */
-        this.ranges = (what && (`ranges` in what ) && what.ranges ) || null;
+        this.ranges = [];
+
+        if (what && (`ranges` in what ) && what.ranges && Array.isArray(what.ranges) ) {
+            for(let r = 0; r < what.ranges.length; r++) {
+                let range_thing = what.ranges[r];
+                this.ranges.push(new SpecSignalRange(range_thing));
+            }
+        }
 
         /**
          * @type {?SpecSignal}
@@ -66,8 +73,15 @@ class Spec  extends SpecPartBase {
     /**
      *
      * @param {SpecSignal[]} signals
+     * @returns {SpecSignal}
      */
     whisper(signals) {
+
+        /**
+         *
+         * @type {Object.<string, SpecSignal[]>}
+         */
+        let accumulated_signals = {};
 
         let accumulated_values = {};
         let values = {};
@@ -77,17 +91,25 @@ class Spec  extends SpecPartBase {
             if (da_signal.owned_by_spec_id === this.id) {
                 continue;
             }
-            for(let r = 0; r < this.ranges.length; r++) {
-                let le_range = this.ranges[r];
-                if (da_signal.hz >= le_range.listen_min_hz && da_signal.hz <= le_range.listen_max_hz) {
-                    if (da_signal.strength >= le_range.listen_min_strength && da_signal.strength <= le_range.listen_max_strength) {
-                        if (!(le_range.name in accumulated_values)) {
-                            accumulated_values[le_range.name] = [];
+            if (this.ranges) {
+                for(let r = 0; r < this.ranges.length; r++) {
+                    let le_range = this.ranges[r];
+                    if (da_signal.hz >= le_range.listen_min_hz && da_signal.hz <= le_range.listen_max_hz) {
+                        if (da_signal.strength >= le_range.listen_min_strength && da_signal.strength <= le_range.listen_max_strength) {
+                            if (!(le_range.name in accumulated_values)) {
+                                accumulated_values[le_range.name] = [];
+                            }
+                            accumulated_values[le_range.name].push(da_signal.value) ;
+
+                            if (!(le_range.name in accumulated_signals)) {
+                                accumulated_signals[le_range.name] = [];
+                            }
+                            accumulated_signals[le_range.name].push(da_signal) ;
                         }
-                        accumulated_values[le_range.name].push(da_signal.value) ;
                     }
                 }
             }
+
         }
         for (let i in accumulated_values) {
             if (accumulated_values[i].length === 1) {
@@ -98,12 +120,15 @@ class Spec  extends SpecPartBase {
         }
 
         if (this.process) {
-            let proc = this.process(values);
+            let proc = this.process(values,accumulated_signals);
 
             if ( typeof proc === 'object' && proc instanceof SpecSignal) {
-                this.output = proc;
+                return  new SpecSignal(proc);
             } else {
-                this.output.value = proc;
+                if (!proc) {return null;}
+                let ret_here = new SpecSignal(this.output);
+                ret_here.value = proc;
+                return ret_here;
             }
         }
     }

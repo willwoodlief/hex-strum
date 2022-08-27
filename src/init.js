@@ -18,12 +18,19 @@ function hex_strum_init() {
             process: null
         });
 
-        test_spec_condition = new EntityMonoCutoff({
+        test_spec_condition = new EntitySteadyCutoff({
             signal: {hz:30,range:5,value:'hello there'},
-            location: {x: 23, y: 9},
-            ranges: [{listen_min_strength: 10,listen_max_strength:30,listen_min_hz: 100, listen_max_hz:110,name:'burst_orange'}],
+            location: {x: 24, y: 15},
+            ranges: [{listen_min_strength: 3,listen_max_strength:4,listen_min_hz: 100, listen_max_hz:110,name:'burst_orange'}],
             process: null
-        },55,true);
+        },55,false);
+
+        new EntityRepeater({
+            signal: {hz:'purple',range:10,value:'what me worry?'},
+            location: {x: 24, y: 15},
+            ranges: [{listen_min_strength: null,listen_max_strength:null,listen_min_hz: null, listen_max_hz:null,name:'hello'}],
+            process: null
+        });
     });
 
 

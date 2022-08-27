@@ -1,4 +1,4 @@
-class EntityMonoCutoff extends EntityBase {
+class EntitySteadyCutoff extends EntityBase {
 
 
     /**
@@ -13,7 +13,6 @@ class EntityMonoCutoff extends EntityBase {
         let that = this;
 
         this.spec.process = function(values) {
-            debugger;
             let ret = new SpecSignal(that.remembered_output);
             if (b_turn_on) {
                 ret.strength = 1;
@@ -33,15 +32,15 @@ class EntityMonoCutoff extends EntityBase {
                 if (isNaN(float_val)) { continue;}
                 if (b_turn_on) {
                     if (float_val >= threshold_value) {
-                        ret.output = that.remembered_output;
+                        ret.strength = that.remembered_output.strength;
                     } else {
-                        ret.output.strength = 1;
+                        ret.strength = 1;
                     }
                 } else {
                     if (float_val < threshold_value) {
-                        ret.output = that.remembered_output;
+                        ret.strength = that.remembered_output.strength;
                     } else {
-                        ret.output.strength = 1;
+                        ret.strength = 1;
                     }
                 }
             }
