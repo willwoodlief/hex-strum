@@ -4,7 +4,7 @@ class SpecSignal extends SpecPartBase {
     static HZ_ALLOWED_MAX = 359;
 
     static STRENGTH_ALLOWED_MIN = 0;
-    static STRENGTH_ALLOWED_MAX = 20;
+    static STRENGTH_ALLOWED_MAX = 35;
     constructor(what) {
         super(what);
         /**

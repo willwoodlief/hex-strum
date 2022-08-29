@@ -15,8 +15,7 @@ class SpecContainer  {
     create_spec(x,y,input,output,value_function) {
         let stack = this.get_stack_at_location(x,y);
         if (!stack) {
-            console.warn('no stack at ',x,y);
-            return;
+            throw new Error(`no stack at ${x} ${y}`);
         }
         let ranges ;
         if (Array.isArray(input)) {
@@ -27,6 +26,35 @@ class SpecContainer  {
         let spec = new Spec({ranges: ranges,output:output,process: value_function});
         stack.add_part(spec);
         return spec;
+    }
+
+    /**
+     *
+     * @param {Spec} spec
+     */
+    remove_spec(spec) {
+        /**
+         *
+         * @type {SpecHexStack|null}
+         */
+        let stack = HexStrum.logical.find_part_by_id(spec.id);
+        if (!stack) {
+            throw new Error("spec has no stack")
+        }
+        stack.remove_part(spec);
+    }
+
+    // noinspection JSUnusedGlobalSymbols
+    /**
+     *
+     * @param {Spec} spec
+     * @param {number} x
+     * @param {number} y
+     */
+    move_spec(spec,x,y) {
+        this.remove_spec(spec)
+        let stack = this.get_stack_at_location(x,y);
+        stack.add_part(spec);
     }
 
     /**
@@ -64,6 +92,14 @@ class SpecContainer  {
         return ret;
     }
 
+    clear_signals() {
+        let stacks = this.get_stacks();
+        for(let stack_index = 0; stack_index < stacks.length; stack_index++) {
+            let hex_stack = stacks[stack_index];
+            hex_stack.clear_signals();
+        }
+    }
+
     run() {
 
         let stacks = this.get_stacks();
@@ -73,7 +109,7 @@ class SpecContainer  {
         let stack_lookup = {};
 
         /**
-         * @type {Spec[]}
+         * @type {HexStrumRunSignal[]}
          */
         let specs_all = [];
 
@@ -84,32 +120,31 @@ class SpecContainer  {
             let specs_here = hex_stack.get_specs();
 
             for(let s = 0; s < specs_here.length; s++) {
-                for(let s = 0; s < specs_here.length; s++) {
-                    let dat_spec = specs_here[s];
-                    dat_spec.whisper(hex_stack.get_signals());
-                    specs_all.push(dat_spec);
+                let dat_spec = specs_here[s];
+                let dat_signal = dat_spec.whisper(hex_stack.get_signals());
+                if (!dat_signal) {
+                    continue;
                 }
+                let current_position = get_position(dat_spec);
+                specs_all.push({signal:dat_signal,position: current_position});
             }
         }
 
-        for(let stack_index = 0; stack_index < stacks.length; stack_index++) {
-            let hex_stack = stacks[stack_index];
-            hex_stack.clear_signals();
-        }
+        this.clear_signals();
 
         for(let spec_index = 0; spec_index < specs_all.length; spec_index++) {
-            let a_spec = specs_all[spec_index];
-            spread(a_spec);
+            let thing = specs_all[spec_index];
+            spread(thing);
         }
 
 
         /**
          *
-         * @param {Spec} spec
+         * @param {HexStrumRunSignal} data
          */
-        function spread(spec) {
-            let current_signal = new SpecSignal(spec.output);
-            let current_position = get_position(spec);
+        function spread(data) {
+            let current_signal = data.signal;
+            let current_position = data.position;
             let origin = new HexCoordinate(current_position);
             let original_strength = current_signal.strength;
             /**
@@ -172,32 +207,37 @@ class SpecContainer  {
 
             }
 
-            /**
-             * @param {?Spec} spec
-             */
-            function get_parent_stack(spec) {
-                for(let stack_index = 0; stack_index < stacks.length; stack_index++) {
-                    let hex_stack = stacks[stack_index];
-                    if (hex_stack.has_part(spec)) {
-                        return hex_stack;
-                    }
-                }
-                return null;
-            }
 
 
-            /**
-             * @param {Spec} spec
-             * @return {?HexCoordinate}
-             */
-            function get_position(spec) {
-                let parent_stack = get_parent_stack(spec);
-                if (parent_stack) {
-                    return HexStrum.logical.get_coordinates(parent_stack);
-                }
-                return null;
-            }
+
+
         }//end spread
+
+
+        /**
+         * @param {Spec} spec
+         * @return {?HexCoordinate}
+         */
+        function get_position(spec) {
+            let parent_stack = get_parent_stack(spec);
+            if (parent_stack) {
+                return HexStrum.logical.get_coordinates(parent_stack);
+            }
+            return null;
+        }
+
+        /**
+         * @param {?Spec} spec
+         */
+        function get_parent_stack(spec) {
+            for(let stack_index = 0; stack_index < stacks.length; stack_index++) {
+                let hex_stack = stacks[stack_index];
+                if (hex_stack.has_part(spec)) {
+                    return hex_stack;
+                }
+            }
+            return null;
+        }
 
     }
 
